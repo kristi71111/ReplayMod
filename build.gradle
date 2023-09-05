@@ -182,9 +182,9 @@ dependencies {
     shadow 'com.github.javagl.JglTF:jgltf-model:3af6de4'
     shadow 'org.aspectj:aspectjrt:1.8.2'
     shadow 'com.github.ReplayMod.JavaBlend:2.79.0:a0696f8'
-    shadow "com.github.ReplayMod:ReplayStudio:a1f82a7"
+    shadow "com.github.ReplayMod:ReplayStudio:a1e2b83"
     shadow 'com.github.ReplayMod:lwjgl-utils:27dcd66'
-
+    shadow 'com.github.viaversion:opennbt:9c06609'
     // implementation(jGui){ transitive = false } // FG 1.2 puts all MC deps into the compile configuration and we don't want to shade those
     testCompile 'junit:junit:4.11'
 }

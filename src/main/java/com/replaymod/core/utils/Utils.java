@@ -21,7 +21,7 @@ import com.replaymod.gui.popup.GuiInfoPopup;
 import com.replaymod.gui.utils.Colors;
 import com.replaymod.gui.versions.Image;
 import com.replaymod.gui.versions.MCVer;
-import com.replaymod.replaystudio.us.myles.ViaVersion.api.protocol.ProtocolVersion;
+import com.replaymod.replaystudio.lib.viaversion.api.protocol.version.ProtocolVersion;
 import de.johni0702.minecraft.gui.utils.lwjgl.Dimension;
 import de.johni0702.minecraft.gui.utils.lwjgl.ReadableDimension;
 import net.minecraft.client.gui.screen.Screen;
@@ -315,7 +315,7 @@ public class Utils {
 
             ProtocolVersion latestVersion = ProtocolVersion.getProtocols()
                     .stream()
-                    .max(Comparator.comparing(ProtocolVersion::getId))
+                    .max(Comparator.comparing(ProtocolVersion::getVersion))
                     .orElseThrow(RuntimeException::new);
             getInfo().addElements(new VerticalLayout.Data(0.5),
                     new GuiLabel()

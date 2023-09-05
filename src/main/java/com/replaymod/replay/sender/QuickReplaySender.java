@@ -1,7 +1,6 @@
 package com.replaymod.replay.sender;
 
 import com.github.steveice10.packetlib.io.NetInput;
-import com.github.steveice10.packetlib.tcp.io.ByteBufNetInput;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -13,18 +12,12 @@ import com.replaymod.mixin.MinecraftAccessor;
 import com.replaymod.mixin.TimerAccessor;
 import com.replaymod.replay.ReplayModReplay;
 import com.replaymod.replay.ReplaySender;
+import com.replaymod.replaystudio.rar.RandomAccessReplay;
 import com.replaymod.replaystudio.replay.ReplayFile;
-import com.replaymod.replaystudio.util.RandomAccessReplay;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.PacketDirection;
-import net.minecraft.network.ProtocolType;
 import net.minecraft.network.play.server.SPlayerPositionLookPacket;
 import net.minecraft.network.play.server.SRespawnPacket;
 import net.minecraft.util.registry.DynamicRegistries;
@@ -53,7 +46,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
     private final Minecraft mc = getMinecraft();
 
     private final ReplayModReplay mod;
-    private final RandomAccessReplay<IPacket<?>> replay;
+    private final RandomAccessReplay replay;
     private final EventHandler eventHandler = new EventHandler();
     private ChannelHandlerContext ctx;
 
@@ -74,9 +67,9 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
 
     public QuickReplaySender(ReplayModReplay mod, ReplayFile replayFile) {
         this.mod = mod;
-        this.replay = new RandomAccessReplay<IPacket<?>>(replayFile, getPacketTypeRegistry(false)) {
+        this.replay = new RandomAccessReplay(replayFile, getPacketTypeRegistry(false)) {
+            /*
             private byte[] buf = new byte[0];
-
             @Override
             protected IPacket<?> decode(com.github.steveice10.netty.buffer.ByteBuf byteBuf) throws IOException {
                 int packetId = new ByteBufNetInput(byteBuf).readVarInt();
@@ -92,10 +85,10 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
                     mcPacket.readPacketData(new PacketBuffer(wrappedBuf));
                 }
                 return mcPacket;
-            }
+            }*/
 
             @Override
-            protected void dispatch(IPacket<?> packet) {
+            protected void dispatch(com.replaymod.replaystudio.protocol.Packet packet) {
                 ctx.fireChannelRead(packet);
             }
         };

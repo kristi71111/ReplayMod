@@ -8,11 +8,11 @@ import com.replaymod.replaystudio.filter.SquashFilter;
 import com.replaymod.replaystudio.filter.StreamFilter;
 import com.replaymod.replaystudio.io.ReplayInputStream;
 import com.replaymod.replaystudio.io.ReplayOutputStream;
+import com.replaymod.replaystudio.lib.viaversion.util.Pair;
 import com.replaymod.replaystudio.protocol.PacketTypeRegistry;
 import com.replaymod.replaystudio.replay.ReplayFile;
 import com.replaymod.replaystudio.replay.ReplayMetaData;
 import com.replaymod.replaystudio.stream.IteratorStream;
-import com.replaymod.replaystudio.us.myles.ViaVersion.api.Pair;
 import com.replaymod.replaystudio.util.Utils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -121,7 +121,7 @@ public class MarkerProcessor {
         int splitCounter = 0;
 
         PacketTypeRegistry registry = MCVer.getPacketTypeRegistry(true);
-        SquashFilter squashFilter = new SquashFilter();
+        SquashFilter squashFilter = new SquashFilter(null,null,null);
 
         List<Pair<Path, ReplayMetaData>> outputPaths = new ArrayList<>();
 
@@ -179,7 +179,7 @@ public class MarkerProcessor {
                                         cutFilter.release();
                                     }
                                     startCutOffset = nextMarker.getTime();
-                                    cutFilter = new SquashFilter();
+                                    cutFilter = new SquashFilter(null,null,null);
                                 } else if (MARKER_NAME_END_CUT.equals(nextMarker.getName())) {
                                     timeOffset += nextMarker.getTime() - startCutOffset;
                                     if (cutFilter != null) {
