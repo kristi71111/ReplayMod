@@ -452,42 +452,8 @@ public class ReplayHandler {
             if (diff > 0 && diff < 5000) { // Small difference and no time travel
                 replaySender.jumpToTime(targetTime);
             } else { // We either have to restart the replay or send a significant amount of packets
-                // Render our please-wait-screen
-                GuiScreen guiScreen = new GuiScreen();
-                guiScreen.setBackground(AbstractGuiScreen.Background.DIRT);
-                guiScreen.addElements(new HorizontalLayout.Data(0.5),
-                        new GuiLabel().setI18nText("replaymod.gui.pleasewait"));
-
                 // Make sure that the replaysender changes into sync mode
                 replaySender.setSyncModeAndWait();
-
-                // Perform the rendering using OpenGL
-                pushMatrix();
-                clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
-                        , true
-                );
-                enableTexture();
-                mc.getFramebuffer().bindFramebuffer(true);
-                MainWindow window = mc.getMainWindow();
-                RenderSystem.clear(256, Minecraft.IS_RUNNING_ON_MAC);
-                RenderSystem.matrixMode(GL11.GL_PROJECTION);
-                RenderSystem.loadIdentity();
-                RenderSystem.ortho(0, window.getFramebufferWidth() / window.getGuiScaleFactor(), window.getFramebufferHeight() / window.getGuiScaleFactor(), 0, 1000, 3000);
-                RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-                RenderSystem.loadIdentity();
-                RenderSystem.translatef(0, 0, -2000);
-
-                guiScreen.toMinecraft().init(mc, window.getScaledWidth(), window.getScaledHeight());
-                guiScreen.toMinecraft().render(new MatrixStack(), 0, 0, 0);
-                guiScreen.toMinecraft().onClose();
-
-                mc.getFramebuffer().unbindFramebuffer();
-                popMatrix();
-                pushMatrix();
-                mc.getFramebuffer().framebufferRender(mc.getMainWindow().getFramebufferWidth(), mc.getMainWindow().getFramebufferHeight());
-                popMatrix();
-
-                mc.getMainWindow().flipFrame();
 
                 // Send the packets
                 do {
