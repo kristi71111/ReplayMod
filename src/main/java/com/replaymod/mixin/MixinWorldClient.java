@@ -53,7 +53,7 @@ public abstract class MixinWorldClient extends World implements RecordingEventHa
     }
 
     // Same goes for level events (also called effects). E.g. door open, block break, etc.
-    @Inject(method = "syncWorldEvent", at = @At("HEAD"))
+    @Inject(method = "playEvent", at = @At("HEAD"))
     private void playLevelEvent(PlayerEntity player, int type, BlockPos pos, int data, CallbackInfo ci) {
         if (player == this.mc.player) {
             // We caused this event, the server won't send it to us

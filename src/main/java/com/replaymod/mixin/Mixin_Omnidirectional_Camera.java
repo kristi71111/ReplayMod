@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(GameRenderer.class)
 public abstract class Mixin_Omnidirectional_Camera implements EntityRendererHandler.IEntityRenderer {
-    @Redirect(method = "method_22973", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/vector/Matrix4f;perspective(DFFF)Lnet/minecraft/util/math/vector/Matrix4f;"))
+    @Redirect(method = "getProjectionMatrix", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/vector/Matrix4f;perspective(DFFF)Lnet/minecraft/util/math/vector/Matrix4f;"))
     private Matrix4f replayModRender_perspective$0(double fovY, float aspect, float zNear, float zFar) {
         return replayModRender_perspective((float) fovY, aspect, zNear, zFar);
     }

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mixin(NetworkRegistry.class)
 public interface NetworkRegistryAccessor {
-    @Invoker("gatherLoginPayloads")
+    @Invoker(value = "gatherLoginPayloads", remap = false)
     static List<NetworkRegistry.LoginPayload> invokeGatherLoginPayloads(NetworkDirection direction, boolean isLocal) {
         throw new AssertionError();
     }

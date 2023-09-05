@@ -117,7 +117,7 @@ minecraft {
         }
     }
 
-    mappings channel: 'snapshot', version: '20210309-1.16.4'
+    mappings channel: 'snapshot', version: '20210309-1.16.5'
 }
 
 repositories {
@@ -155,7 +155,7 @@ dependencies {
         exclude group: 'com.google.code.gson', module: 'gson' // provided by MC
     }
 
-    minecraft 'net.minecraftforge:forge:1.16.4-35.1.37'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
 
     annotationProcessor "org.spongepowered:mixin:$mixinVersion"
     compileOnly "org.spongepowered:mixin:$mixinVersion"

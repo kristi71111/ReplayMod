@@ -17,14 +17,14 @@ import java.util.List;
 
 @Mixin(FMLHandshakeHandler.class)
 public abstract class MixinFMLHandshakeHandler {
-    @Shadow
+    @Shadow(remap = false)
     private List<NetworkRegistry.LoginPayload> messageList;
 
-    @Shadow
+    @Shadow(remap = false)
     @Final
     private NetworkDirection direction;
 
-    @Inject(method = "<init>(Lnet/minecraft/network/NetworkManager;Lnet/minecraftforge/fml/network/NetworkDirection;)V", at = @At("TAIL"))
+    @Inject(method = "<init>(Lnet/minecraft/network/NetworkManager;Lnet/minecraftforge/fml/network/NetworkDirection;)V", at = @At("TAIL"), remap = false)
     public void replayModRecording_setupForLocalRecording(NetworkManager networkManager, NetworkDirection side, CallbackInfo ci) {
         if (!networkManager.isLocalChannel()) {
             return;
