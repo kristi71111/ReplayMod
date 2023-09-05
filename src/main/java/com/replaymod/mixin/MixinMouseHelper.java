@@ -12,30 +12,13 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(MouseHelper.class)
 public abstract class MixinMouseHelper {
-    @Shadow
-    private boolean mouseGrabbed;
-
-    @Inject(method = "grabMouse", at = @At("HEAD"), cancellable = true)
-    private void noGrab(CallbackInfo ci) {
-        // Used to be provided by Forge for 1.12.2 and below
-        if (Boolean.valueOf(System.getProperty("fml.noGrab", "false"))) {
-            this.mouseGrabbed = true;
-            ci.cancel();
-        }
-    }
-
     @Inject(method = "scrollCallback",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSpectator()Z"),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/player/ClientPlayerEntity;isSpectator()Z"),
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
-    private void handleReplayModScroll(
-            long _p0, double _p1, double _p2,
-            CallbackInfo ci,
-            double _l1,
-            float yOffsetAccumulated
-    ) {
+    private void handleReplayModScroll(long handle, double xoffset, double yoffset, CallbackInfo ci) {
         if (ReplayModReplay.instance.getReplayHandler() != null) {
-            InputReplayTimer.handleScroll((int) (yOffsetAccumulated * 120));
+            InputReplayTimer.handleScroll((int) (yoffset * 120));
             ci.cancel();
         }
     }
