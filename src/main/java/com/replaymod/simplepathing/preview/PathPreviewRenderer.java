@@ -240,7 +240,6 @@ public class PathPreviewRenderer extends EventRegistrations {
     private void drawPoint(Triple<Double, Double, Double> view,
                            Triple<Double, Double, Double> pos,
                            Keyframe keyframe) {
-
         mc.getTextureManager().bindTexture(TEXTURE);
 
         float posX = 80f / ReplayMod.TEXTURE_SIZE;

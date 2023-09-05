@@ -14,10 +14,16 @@ import com.replaymod.replay.ReplayModReplay;
 import com.replaymod.replay.ReplaySender;
 import com.replaymod.replaystudio.rar.RandomAccessReplay;
 import com.replaymod.replaystudio.replay.ReplayFile;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketDirection;
+import net.minecraft.network.ProtocolType;
 import net.minecraft.network.play.server.SPlayerPositionLookPacket;
 import net.minecraft.network.play.server.SRespawnPacket;
 import net.minecraft.util.registry.DynamicRegistries;
@@ -68,6 +74,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
     public QuickReplaySender(ReplayModReplay mod, ReplayFile replayFile) {
         this.mod = mod;
         this.replay = new RandomAccessReplay(replayFile, getPacketTypeRegistry(false)) {
+            private byte[] buf = new byte[0];
             /*
             private byte[] buf = new byte[0];
             @Override
@@ -89,7 +96,27 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
 
             @Override
             protected void dispatch(com.replaymod.replaystudio.protocol.Packet packet) {
-                ctx.fireChannelRead(packet);
+                com.github.steveice10.netty.buffer.ByteBuf byteBuf = packet.getBuf();
+                int size = byteBuf.readableBytes();
+                if (buf.length < size) {
+                    buf = new byte[size];
+                }
+                byteBuf.getBytes(byteBuf.readerIndex(), buf, 0, size);
+                ByteBuf wrappedBuf = Unpooled.wrappedBuffer(buf);
+                wrappedBuf.writerIndex(size);
+                PacketBuffer packetByteBuf = new PacketBuffer(wrappedBuf);
+
+                IPacket<?> mcPacket;
+                mcPacket = ProtocolType.PLAY.getPacket(PacketDirection.CLIENTBOUND, packet.getId());
+                if (mcPacket != null) {
+                    try {
+                        mcPacket.readPacketData(packetByteBuf);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                    ctx.fireChannelRead(packet);
+                }
             }
         };
     }

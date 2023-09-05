@@ -396,6 +396,9 @@ public class ReplayHandler {
     }
 
     public void doJump(int targetTime, boolean retainCameraPosition) {
+        if (!getReplaySender().isAsyncMode()) {
+            return; // path playback, rendering, etc. -> no jumping allowed
+        }
         if (getReplaySender() == quickReplaySender) {
             // Always round to full tick
             targetTime = targetTime + targetTime % 50;
@@ -466,6 +469,9 @@ public class ReplayHandler {
 
                 mc.getConnection().getNetworkManager()
                         .tick();
+                if (mc.world == null) {
+                    return;
+                }
                 for (Entity entity : mc.world.getAllEntities()) {
                     skipTeleportInterpolation(entity);
                     entity.lastTickPosX = entity.prevPosX = entity.getPosX();

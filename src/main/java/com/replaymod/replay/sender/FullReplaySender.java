@@ -351,8 +351,9 @@ public class FullReplaySender extends ChannelDuplexHandler implements ReplaySend
 
                 if (processed instanceof SChunkDataPacket) {
                     Runnable doLightUpdates = () -> {
-                        if (mc.world != null) {
-                            WorldLightManager provider = mc.world.getChunkProvider().getLightManager();
+                        ClientWorld world = mc.world;
+                        if (world!= null) {
+                            WorldLightManager provider = world.getChunkProvider().getLightManager();
                             while (provider.hasLightWork()) {
                                 provider.tick(Integer.MAX_VALUE, true, true);
                             }

@@ -363,6 +363,10 @@ public class CameraEntity
         // Default to 1 as to not render the cooldown indicator (renders for < 1)
         return 1;
     }
+    @Override
+    public float getWaterBrightness() {
+        return falseUnlessSpectating(__ -> true) ? super.getWaterBrightness() : 1f;
+    }
 
     @Override
     public Hand getActiveHand() {

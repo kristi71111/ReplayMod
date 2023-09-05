@@ -1,5 +1,5 @@
 buildscript {
-    def (major, minor, patch) = '1.16.4-forge'.tokenize('-')[0].tokenize('.')
+    def (major, minor, patch) = '1.16.5-forge'.tokenize('-')[0].tokenize('.')
     def mcVersion = "${major}${minor.padLeft(2, '0')}${(patch ?: '').padLeft(2, '0')}" as int
     def fabric = false
 

@@ -143,6 +143,8 @@ public class ReplayMod implements Module, Scheduler {
         try {
             Files.setAttribute(path, "dos:hidden", true);
         } catch (UnsupportedOperationException ignored) {
+        } catch (Exception e){
+            e.printStackTrace();
         }
         return path;
     }
