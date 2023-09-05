@@ -29,13 +29,13 @@ import com.replaymod.gui.utils.Consumer;
 import de.johni0702.minecraft.gui.utils.lwjgl.ReadableColor;
 
 public interface IGuiColorPicker<T extends IGuiColorPicker<T>> extends GuiElement<T> {
-    T setColor(ReadableColor color);
-
     ReadableColor getColor();
 
-    T setOpened(boolean opened);
+    T setColor(ReadableColor color);
 
     boolean isOpened();
+
+    T setOpened(boolean opened);
 
     T onSelection(Consumer<ReadableColor> consumer);
 }

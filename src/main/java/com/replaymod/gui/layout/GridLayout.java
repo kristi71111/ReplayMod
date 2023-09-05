@@ -187,21 +187,13 @@ public class GridLayout implements Layout {
         return this.columns;
     }
 
-    public int getSpacingX() {
-        return this.spacingX;
-    }
-
-    public int getSpacingY() {
-        return this.spacingY;
-    }
-
-    public boolean isCellsEqualSize() {
-        return this.cellsEqualSize;
-    }
-
     public GridLayout setColumns(int columns) {
         this.columns = columns;
         return this;
+    }
+
+    public int getSpacingX() {
+        return this.spacingX;
     }
 
     public GridLayout setSpacingX(int spacingX) {
@@ -209,9 +201,17 @@ public class GridLayout implements Layout {
         return this;
     }
 
+    public int getSpacingY() {
+        return this.spacingY;
+    }
+
     public GridLayout setSpacingY(int spacingY) {
         this.spacingY = spacingY;
         return this;
+    }
+
+    public boolean isCellsEqualSize() {
+        return this.cellsEqualSize;
     }
 
     public GridLayout setCellsEqualSize(boolean cellsEqualSize) {
@@ -235,12 +235,12 @@ public class GridLayout implements Layout {
             return this.alignmentX;
         }
 
-        public double getAlignmentY() {
-            return this.alignmentY;
-        }
-
         public void setAlignmentX(double alignmentX) {
             this.alignmentX = alignmentX;
+        }
+
+        public double getAlignmentY() {
+            return this.alignmentY;
         }
 
         public void setAlignmentY(double alignmentY) {

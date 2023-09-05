@@ -29,9 +29,9 @@ import com.replaymod.gui.function.Focusable;
 import de.johni0702.minecraft.gui.utils.lwjgl.ReadableColor;
 
 public interface IGuiTextArea<T extends IGuiTextArea<T>> extends GuiElement<T>, Focusable<T> {
-    T setText(String[] lines);
-
     String[] getText();
+
+    T setText(String[] lines);
 
     String getText(int fromX, int fromY, int toX, int toY);
 
@@ -55,21 +55,21 @@ public interface IGuiTextArea<T extends IGuiTextArea<T>> extends GuiElement<T>, 
 
     T setCursorPosition(int x, int y);
 
-    T setMaxTextWidth(int maxTextWidth);
-
-    T setMaxTextHeight(int maxTextHeight);
-
-    T setMaxCharCount(int maxCharCount);
-
     T setTextColor(ReadableColor textColor);
 
     T setTextColorDisabled(ReadableColor textColorDisabled);
 
     int getMaxTextWidth();
 
+    T setMaxTextWidth(int maxTextWidth);
+
     int getMaxTextHeight();
 
+    T setMaxTextHeight(int maxTextHeight);
+
     int getMaxCharCount();
+
+    T setMaxCharCount(int maxCharCount);
 
     String[] getHint();
 

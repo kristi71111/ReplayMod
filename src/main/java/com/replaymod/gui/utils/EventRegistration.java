@@ -1,6 +1,14 @@
 package com.replaymod.gui.utils;
 
 public class EventRegistration<T> {
+    private final Event<T> event;
+    private final T listener;
+    private boolean registered;
+    private EventRegistration(Event<T> event, T listener) {
+        this.event = event;
+        this.listener = listener;
+    }
+
     public static <T> EventRegistration<T> create(Event<T> event, T callback) {
         return new EventRegistration<>(event, callback);
     }
@@ -9,15 +17,6 @@ public class EventRegistration<T> {
         EventRegistration<T> registration = new EventRegistration<>(event, callback);
         registration.register();
         return registration;
-    }
-
-    private final Event<T> event;
-    private final T listener;
-    private boolean registered;
-
-    private EventRegistration(Event<T> event, T listener) {
-        this.event = event;
-        this.listener = listener;
     }
 
     public void register() {

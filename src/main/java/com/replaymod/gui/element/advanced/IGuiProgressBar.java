@@ -27,13 +27,13 @@ package com.replaymod.gui.element.advanced;
 import com.replaymod.gui.element.GuiElement;
 
 public interface IGuiProgressBar<T extends IGuiProgressBar<T>> extends GuiElement<T> {
-    T setProgress(float progress);
-
-    T setLabel(String label);
-
     T setI18nLabel(String label, Object... args);
 
     float getProgress();
 
+    T setProgress(float progress);
+
     String getLabel();
+
+    T setLabel(String label);
 }

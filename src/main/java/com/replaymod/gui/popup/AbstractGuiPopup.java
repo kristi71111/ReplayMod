@@ -38,7 +38,7 @@ import de.johni0702.minecraft.gui.utils.lwjgl.ReadableDimension;
 import java.util.function.Function;
 
 public abstract class AbstractGuiPopup<T extends AbstractGuiPopup<T>> extends AbstractGuiContainer<T> {
-    private final com.replaymod.gui.container.GuiPanel popupContainer = new com.replaymod.gui.container.GuiPanel(this) {
+    private final com.replaymod.gui.container.GuiContainer container;    private final com.replaymod.gui.container.GuiPanel popupContainer = new com.replaymod.gui.container.GuiPanel(this) {
         private final int u0 = 0;
         private final int v0 = 39;
 
@@ -93,9 +93,11 @@ public abstract class AbstractGuiPopup<T extends AbstractGuiPopup<T>> extends Ab
             return new Dimension(size.getWidth() + 20, size.getHeight() + 20);
         }
     });
-    protected final com.replaymod.gui.container.GuiPanel popup = new GuiPanel(popupContainer);
-
-    private int layer;
+    private int layer;    protected final com.replaymod.gui.container.GuiPanel popup = new GuiPanel(popupContainer);
+    private Layout originalLayout;
+    private boolean wasAllowUserInput;
+    private boolean wasMouseVisible;
+    private boolean renderBackground = true;
 
     {
         setLayout(new com.replaymod.gui.layout.CustomLayout<T>() {
@@ -105,14 +107,6 @@ public abstract class AbstractGuiPopup<T extends AbstractGuiPopup<T>> extends Ab
             }
         });
     }
-
-    private Layout originalLayout;
-    private boolean wasAllowUserInput;
-    private boolean wasMouseVisible;
-    private boolean renderBackground = true;
-
-    private final com.replaymod.gui.container.GuiContainer container;
-
     public AbstractGuiPopup(com.replaymod.gui.container.GuiContainer container) {
         while (container.getContainer() != null) {
             container = container.getContainer();
@@ -156,14 +150,14 @@ public abstract class AbstractGuiPopup<T extends AbstractGuiPopup<T>> extends Ab
         }
     }
 
-    public T setLayer(int layer) {
-        this.layer = layer;
-        return getThis();
-    }
-
     @Override
     public int getLayer() {
         return layer;
+    }
+
+    public T setLayer(int layer) {
+        this.layer = layer;
+        return getThis();
     }
 
     @Override
@@ -171,4 +165,8 @@ public abstract class AbstractGuiPopup<T extends AbstractGuiPopup<T>> extends Ab
         // Consume any event which could otherwise reach elements below our popup
         return super.invokeHandlers(layer, ofType, handle) || layer <= 0;
     }
+
+
+
+
 }

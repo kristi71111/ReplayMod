@@ -39,20 +39,12 @@ import de.johni0702.minecraft.gui.utils.lwjgl.ReadablePoint;
 import java.util.function.Consumer;
 
 public class GuiYesNoPopup extends AbstractGuiPopup<GuiYesNoPopup> implements Typeable {
-    public static GuiYesNoPopup open(com.replaymod.gui.container.GuiContainer container, GuiElement... info) {
-        GuiYesNoPopup popup = new GuiYesNoPopup(container).setBackgroundColor(Colors.DARK_TRANSPARENT);
-        popup.getInfo().addElements(new com.replaymod.gui.layout.VerticalLayout.Data(0.5), info);
-        popup.open();
-        return popup;
-    }
-
+    private final com.replaymod.gui.container.GuiPanel info = new com.replaymod.gui.container.GuiPanel().setMinSize(new Dimension(320, 50))
+            .setLayout(new com.replaymod.gui.layout.VerticalLayout(com.replaymod.gui.layout.VerticalLayout.Alignment.TOP).setSpacing(2));
     private Consumer<Boolean> onClosed = (accepted) -> {
     };
     private Runnable onAccept = () -> {
     };
-    private Runnable onReject = () -> {
-    };
-
     private final com.replaymod.gui.element.GuiButton yesButton = new com.replaymod.gui.element.GuiButton().setSize(150, 20).onClick(new Runnable() {
         @Override
         public void run() {
@@ -61,7 +53,8 @@ public class GuiYesNoPopup extends AbstractGuiPopup<GuiYesNoPopup> implements Ty
             onClosed.accept(true);
         }
     });
-
+    private Runnable onReject = () -> {
+    };
     private final com.replaymod.gui.element.GuiButton noButton = new com.replaymod.gui.element.GuiButton().setSize(150, 20).onClick(new Runnable() {
         @Override
         public void run() {
@@ -70,23 +63,25 @@ public class GuiYesNoPopup extends AbstractGuiPopup<GuiYesNoPopup> implements Ty
             onClosed.accept(false);
         }
     });
-
-    private final com.replaymod.gui.container.GuiPanel info = new com.replaymod.gui.container.GuiPanel().setMinSize(new Dimension(320, 50))
-            .setLayout(new com.replaymod.gui.layout.VerticalLayout(com.replaymod.gui.layout.VerticalLayout.Alignment.TOP).setSpacing(2));
-
     private final com.replaymod.gui.container.GuiPanel buttons = new com.replaymod.gui.container.GuiPanel()
             .setLayout(new com.replaymod.gui.layout.HorizontalLayout(com.replaymod.gui.layout.HorizontalLayout.Alignment.CENTER).setSpacing(5))
             .addElements(new HorizontalLayout.Data(0.5), yesButton, noButton);
+    private int layer;
 
     {
         popup.setLayout(new com.replaymod.gui.layout.VerticalLayout().setSpacing(10))
                 .addElements(new VerticalLayout.Data(0.5), info, buttons);
     }
 
-    private int layer;
-
     public GuiYesNoPopup(GuiContainer container) {
         super(container);
+    }
+
+    public static GuiYesNoPopup open(com.replaymod.gui.container.GuiContainer container, GuiElement... info) {
+        GuiYesNoPopup popup = new GuiYesNoPopup(container).setBackgroundColor(Colors.DARK_TRANSPARENT);
+        popup.getInfo().addElements(new com.replaymod.gui.layout.VerticalLayout.Data(0.5), info);
+        popup.open();
+        return popup;
     }
 
     public GuiYesNoPopup setYesLabel(String label) {

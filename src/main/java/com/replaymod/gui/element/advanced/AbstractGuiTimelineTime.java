@@ -87,13 +87,13 @@ public abstract class AbstractGuiTimelineTime<T extends AbstractGuiTimelineTime<
     }
 
     @Override
-    public T setTimeline(U timeline) {
-        this.timeline = timeline;
-        return getThis();
+    public U getTimeline() {
+        return timeline;
     }
 
     @Override
-    public U getTimeline() {
-        return timeline;
+    public T setTimeline(U timeline) {
+        this.timeline = timeline;
+        return getThis();
     }
 }

@@ -137,55 +137,8 @@ public abstract class AbstractGuiDropdownMenu<V, T extends AbstractGuiDropdownMe
     }
 
     @Override
-    public T setValues(V... values) {
-        this.values = values;
-        dropdown = new GuiPanel() {
-            @Override
-            public void convertFor(com.replaymod.gui.element.GuiElement element, Point point, int relativeLayer) {
-                AbstractGuiDropdownMenu parent = AbstractGuiDropdownMenu.this;
-                if (parent.getContainer() != null) {
-                    parent.getContainer().convertFor(parent, point, relativeLayer + 1);
-                }
-                point.translate(0, -AbstractGuiDropdownMenu.this.getLastSize().getHeight());
-                super.convertFor(element, point, relativeLayer);
-            }
-        }.setLayout(new VerticalLayout());
-        Map<V, com.replaymod.gui.element.IGuiClickable> dropdownEntries = new LinkedHashMap<>();
-        for (V value : values) {
-            DropdownEntry entry = new DropdownEntry(value);
-            dropdownEntries.put(value, entry);
-            dropdown.addElements(null, entry);
-        }
-        unmodifiableDropdownEntries = Collections.unmodifiableMap(dropdownEntries);
-        return getThis();
-    }
-
-    @Override
-    public T setSelected(int selected) {
-        this.selected = selected;
-        onSelection(selected);
-        return getThis();
-    }
-
-    @Override
-    public T setSelected(V value) {
-        for (int i = 0; i < values.length; i++) {
-            if (values[i].equals(value)) {
-                return setSelected(i);
-            }
-        }
-        throw new IllegalArgumentException("The value " + value + " is not in this dropdown menu.");
-    }
-
-    @Override
     public V getSelectedValue() {
         return values[selected];
-    }
-
-    @Override
-    public T setOpened(boolean opened) {
-        this.opened = opened;
-        return getThis();
     }
 
     @Override
@@ -241,12 +194,59 @@ public abstract class AbstractGuiDropdownMenu<V, T extends AbstractGuiDropdownMe
         return this.selected;
     }
 
+    @Override
+    public T setSelected(int selected) {
+        this.selected = selected;
+        onSelection(selected);
+        return getThis();
+    }
+
+    @Override
+    public T setSelected(V value) {
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].equals(value)) {
+                return setSelected(i);
+            }
+        }
+        throw new IllegalArgumentException("The value " + value + " is not in this dropdown menu.");
+    }
+
     public V[] getValues() {
         return this.values;
     }
 
+    @Override
+    public T setValues(V... values) {
+        this.values = values;
+        dropdown = new GuiPanel() {
+            @Override
+            public void convertFor(com.replaymod.gui.element.GuiElement element, Point point, int relativeLayer) {
+                AbstractGuiDropdownMenu parent = AbstractGuiDropdownMenu.this;
+                if (parent.getContainer() != null) {
+                    parent.getContainer().convertFor(parent, point, relativeLayer + 1);
+                }
+                point.translate(0, -AbstractGuiDropdownMenu.this.getLastSize().getHeight());
+                super.convertFor(element, point, relativeLayer);
+            }
+        }.setLayout(new VerticalLayout());
+        Map<V, com.replaymod.gui.element.IGuiClickable> dropdownEntries = new LinkedHashMap<>();
+        for (V value : values) {
+            DropdownEntry entry = new DropdownEntry(value);
+            dropdownEntries.put(value, entry);
+            dropdown.addElements(null, entry);
+        }
+        unmodifiableDropdownEntries = Collections.unmodifiableMap(dropdownEntries);
+        return getThis();
+    }
+
     public boolean isOpened() {
         return this.opened;
+    }
+
+    @Override
+    public T setOpened(boolean opened) {
+        this.opened = opened;
+        return getThis();
     }
 
     private class DropdownEntry extends AbstractGuiClickable<DropdownEntry> {

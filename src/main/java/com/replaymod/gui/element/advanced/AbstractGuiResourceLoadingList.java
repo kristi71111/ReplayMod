@@ -59,14 +59,12 @@ public abstract class AbstractGuiResourceLoadingList
     private final com.replaymod.gui.container.GuiPanel resourcesPanel = new com.replaymod.gui.container.GuiPanel(getListPanel()).setLayout(new com.replaymod.gui.layout.VerticalLayout());
 
     private final Queue<Runnable> resourcesQueue = new ConcurrentLinkedQueue<>();
-
+    private final List<Element> selected = new ArrayList<>();
     private Consumer<Consumer<Supplier<U>>> onLoad;
     private Runnable onSelectionChanged;
     private Runnable onSelectionDoubleClicked;
     private Thread loaderThread;
     private int tick;
-
-    private final List<Element> selected = new ArrayList<>();
     private long selectedLastClickTime;
 
     public AbstractGuiResourceLoadingList() {

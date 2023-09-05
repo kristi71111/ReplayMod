@@ -112,6 +112,10 @@ public class VerticalLayout implements Layout {
         return this;
     }
 
+    public enum Alignment {
+        TOP, BOTTOM, CENTER
+    }
+
     public static class Data implements LayoutData {
         private double alignment;
         private boolean maximizeWidth;
@@ -133,12 +137,12 @@ public class VerticalLayout implements Layout {
             return this.alignment;
         }
 
-        public boolean isMaximizeWidth() {
-            return this.maximizeWidth;
-        }
-
         public void setAlignment(double alignment) {
             this.alignment = alignment;
+        }
+
+        public boolean isMaximizeWidth() {
+            return this.maximizeWidth;
         }
 
         public void setMaximizeWidth(boolean maximizeWidth) {
@@ -166,9 +170,5 @@ public class VerticalLayout implements Layout {
                     ", maximizeWidth=" + maximizeWidth +
                     '}';
         }
-    }
-
-    public enum Alignment {
-        TOP, BOTTOM, CENTER
     }
 }

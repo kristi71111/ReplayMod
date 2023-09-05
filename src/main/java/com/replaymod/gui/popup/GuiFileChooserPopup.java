@@ -51,25 +51,6 @@ import java.util.*;
 
 
 public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> implements Typeable {
-    public static GuiFileChooserPopup openSaveGui(com.replaymod.gui.container.GuiContainer container, String buttonLabel, String... fileExtensions) {
-        GuiFileChooserPopup popup = new GuiFileChooserPopup(container, fileExtensions, false).setBackgroundColor(com.replaymod.gui.utils.Colors.DARK_TRANSPARENT);
-        popup.acceptButton.setI18nLabel(buttonLabel);
-        popup.open();
-        return popup;
-    }
-
-    public static GuiFileChooserPopup openLoadGui(com.replaymod.gui.container.GuiContainer container, String buttonLabel, String... fileExtensions) {
-        GuiFileChooserPopup popup = new GuiFileChooserPopup(container, fileExtensions, true).setBackgroundColor(Colors.DARK_TRANSPARENT);
-        popup.acceptButton.setI18nLabel(buttonLabel).setDisabled();
-        popup.open();
-        return popup;
-    }
-
-    private com.replaymod.gui.utils.Consumer<File> onAccept = (file) -> {
-    };
-    private Runnable onCancel = () -> {
-    };
-
     private final com.replaymod.gui.container.GuiScrollable pathScrollable = new GuiScrollable(popup) {
         @Override
         public void draw(com.replaymod.gui.GuiRenderer renderer, ReadableDimension size, com.replaymod.gui.RenderInfo renderInfo) {
@@ -79,7 +60,19 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
     };
     private final com.replaymod.gui.container.GuiPanel pathPanel = new com.replaymod.gui.container.GuiPanel(pathScrollable).setLayout(new HorizontalLayout());
     private final com.replaymod.gui.container.GuiVerticalList fileList = new GuiVerticalList(popup);
-    private final com.replaymod.gui.element.GuiTextField nameField = new GuiTextField(popup).onEnter(new Runnable() {
+    private final String[] fileExtensions;
+    private final boolean load;
+    private com.replaymod.gui.utils.Consumer<File> onAccept = (file) -> {
+    };
+    private Runnable onCancel = () -> {
+    };
+    private final com.replaymod.gui.element.GuiButton cancelButton = new com.replaymod.gui.element.GuiButton(popup).onClick(new Runnable() {
+        @Override
+        public void run() {
+            onCancel.run();
+            close();
+        }
+    }).setI18nLabel("gui.cancel").setSize(50, 20);    private final com.replaymod.gui.element.GuiTextField nameField = new GuiTextField(popup).onEnter(new Runnable() {
         @Override
         public void run() {
             if (acceptButton.isEnabled()) {
@@ -92,8 +85,7 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
             updateButton();
         }
     }).setMaxLength(Integer.MAX_VALUE);
-
-    private final com.replaymod.gui.element.GuiButton acceptButton = new com.replaymod.gui.element.GuiButton(popup).onClick(new Runnable() {
+    private File folder;    private final com.replaymod.gui.element.GuiButton acceptButton = new com.replaymod.gui.element.GuiButton(popup).onClick(new Runnable() {
         @Override
         public void run() {
             String fileName = nameField.getText();
@@ -106,14 +98,6 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
             close();
         }
     }).setSize(50, 20);
-
-    private final com.replaymod.gui.element.GuiButton cancelButton = new com.replaymod.gui.element.GuiButton(popup).onClick(new Runnable() {
-        @Override
-        public void run() {
-            onCancel.run();
-            close();
-        }
-    }).setI18nLabel("gui.cancel").setSize(50, 20);
 
     {
         fileList.setLayout(new com.replaymod.gui.layout.VerticalLayout().setSpacing(1));
@@ -137,17 +121,26 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
         });
     }
 
-    private final String[] fileExtensions;
-    private final boolean load;
-
-    private File folder;
-
     public GuiFileChooserPopup(GuiContainer container, String[] fileExtensions, boolean load) {
         super(container);
         this.fileExtensions = fileExtensions;
         this.load = load;
 
         setFolder(new File("."));
+    }
+
+    public static GuiFileChooserPopup openSaveGui(com.replaymod.gui.container.GuiContainer container, String buttonLabel, String... fileExtensions) {
+        GuiFileChooserPopup popup = new GuiFileChooserPopup(container, fileExtensions, false).setBackgroundColor(com.replaymod.gui.utils.Colors.DARK_TRANSPARENT);
+        popup.acceptButton.setI18nLabel(buttonLabel);
+        popup.open();
+        return popup;
+    }
+
+    public static GuiFileChooserPopup openLoadGui(com.replaymod.gui.container.GuiContainer container, String buttonLabel, String... fileExtensions) {
+        GuiFileChooserPopup popup = new GuiFileChooserPopup(container, fileExtensions, true).setBackgroundColor(Colors.DARK_TRANSPARENT);
+        popup.acceptButton.setI18nLabel(buttonLabel).setDisabled();
+        popup.open();
+        return popup;
     }
 
     protected void updateButton() {
@@ -343,4 +336,8 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
     public GuiButton getCancelButton() {
         return this.cancelButton;
     }
+
+
+
+
 }

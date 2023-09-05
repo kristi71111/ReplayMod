@@ -29,6 +29,13 @@ import com.replaymod.gui.element.GuiElement;
 public interface IGuiTimeline<T extends IGuiTimeline<T>> extends GuiElement<T> {
 
     /**
+     * Returns the total length of the timeline.
+     *
+     * @return The total length in millisconds
+     */
+    int getLength();
+
+    /**
      * Set the total length of the timeline.
      *
      * @param length length in milliseconds, must be > 0
@@ -37,11 +44,11 @@ public interface IGuiTimeline<T extends IGuiTimeline<T>> extends GuiElement<T> {
     T setLength(int length);
 
     /**
-     * Returns the total length of the timeline.
+     * Returns the current position of the cursor. Should be between 0 and {@link #getLength()}.
      *
-     * @return The total length in millisconds
+     * @return cursor position in milliseconds
      */
-    int getLength();
+    int getCursorPosition();
 
     /**
      * Set the current position of the cursor. Should be between 0 and {@link #getLength()}.
@@ -52,11 +59,11 @@ public interface IGuiTimeline<T extends IGuiTimeline<T>> extends GuiElement<T> {
     T setCursorPosition(int position);
 
     /**
-     * Returns the current position of the cursor. Should be between 0 and {@link #getLength()}.
+     * Returns the zoom of this timeline. 1/10 allows the user to see 1/10 of the total length.
      *
-     * @return cursor position in milliseconds
+     * @return The zoom factor. Must be between 1 (inclusive) and 0 (exclusive)
      */
-    int getCursorPosition();
+    double getZoom();
 
     /**
      * Set the zoom of this timeline. 1/10 allows the user to see 1/10 of the total length.
@@ -67,11 +74,12 @@ public interface IGuiTimeline<T extends IGuiTimeline<T>> extends GuiElement<T> {
     T setZoom(double zoom);
 
     /**
-     * Returns the zoom of this timeline. 1/10 allows the user to see 1/10 of the total length.
+     * Returns the position of the timeline which should be shown.
+     * The left side of the timeline will start at this offset.
      *
-     * @return The zoom factor. Must be between 1 (inclusive) and 0 (exclusive)
+     * @return The offset in milliseconds
      */
-    double getZoom();
+    int getOffset();
 
     /**
      * Set the position of the timeline which should be shown.
@@ -83,20 +91,20 @@ public interface IGuiTimeline<T extends IGuiTimeline<T>> extends GuiElement<T> {
     T setOffset(int offset);
 
     /**
-     * Returns the position of the timeline which should be shown.
-     * The left side of the timeline will start at this offset.
-     *
-     * @return The offset in milliseconds
-     */
-    int getOffset();
-
-    /**
      * Enables makers for this timeline.
      * Markers are drawn in regular intervals and between each big marker there are three small ones.
      *
      * @return {@code this}, for chaining
      */
     T setMarkers();
+
+    /**
+     * Returns whether markers are drawn on this timeline.
+     * Markers are drawn in regular intervals and between each big marker there are three small ones.
+     *
+     * @return {@code true} if markers are drawn, {@code false} otherwise
+     */
+    boolean getMarkers();
 
     /**
      * Set whether markers should be drawn on this timeline.
@@ -108,14 +116,6 @@ public interface IGuiTimeline<T extends IGuiTimeline<T>> extends GuiElement<T> {
     T setMarkers(boolean active);
 
     /**
-     * Returns whether markers are drawn on this timeline.
-     * Markers are drawn in regular intervals and between each big marker there are three small ones.
-     *
-     * @return {@code true} if markers are drawn, {@code false} otherwise
-     */
-    boolean getMarkers();
-
-    /**
      * Returns the interval at which big markers are draw on the timeline.
      * There are three small markers between each pair of big markers.
      *
@@ -124,19 +124,19 @@ public interface IGuiTimeline<T extends IGuiTimeline<T>> extends GuiElement<T> {
     int getMarkerInterval();
 
     /**
+     * Returns whether the cursor is drawn on this timeline.
+     *
+     * @return {@code true} if the cursor is drawn, {@code false} otherwise
+     */
+    boolean getCursor();
+
+    /**
      * Set whether the cursor should be drawn on this timeline.
      *
      * @param active {@code true} to enable drawing of the cursor, {@code false} otherwise
      * @return {@code this}, for chaining
      */
     T setCursor(boolean active);
-
-    /**
-     * Returns whether the cursor is drawn on this timeline.
-     *
-     * @return {@code true} if the cursor is drawn, {@code false} otherwise
-     */
-    boolean getCursor();
 
     T onClick(OnClick onClick);
 

@@ -120,18 +120,6 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
     }
 
     @Override
-    public T setColor(ReadableColor color) {
-        this.color.setColor(color);
-        return getThis();
-    }
-
-    @Override
-    public T setOpened(boolean opened) {
-        this.opened = opened;
-        return getThis();
-    }
-
-    @Override
     public Collection<com.replaymod.gui.element.GuiElement> getChildren() {
         return opened ? Collections.<com.replaymod.gui.element.GuiElement>singleton(picker) : Collections.<GuiElement>emptyList();
     }
@@ -173,8 +161,20 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
         return this.color;
     }
 
+    @Override
+    public T setColor(ReadableColor color) {
+        this.color.setColor(color);
+        return getThis();
+    }
+
     public boolean isOpened() {
         return this.opened;
+    }
+
+    @Override
+    public T setOpened(boolean opened) {
+        this.opened = opened;
+        return getThis();
     }
 
     protected class GuiPicker extends AbstractGuiElement<GuiPicker> implements Clickable, Draggable {

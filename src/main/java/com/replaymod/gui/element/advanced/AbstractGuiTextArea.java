@@ -49,30 +49,25 @@ public abstract class AbstractGuiTextArea<T extends AbstractGuiTextArea<T>>
     private static final ReadableColor CURSOR_COLOR = new Color(240, 240, 240);
     private static final int BORDER = 4;
     private static final int LINE_SPACING = 2;
-
+    public ReadableColor textColorEnabled = new Color(224, 224, 224);
+    public ReadableColor textColorDisabled = new Color(112, 112, 112);
     private boolean focused;
     private com.replaymod.gui.function.Focusable next, previous;
-
     private Consumer<Boolean> focusChanged;
-
     // Content
     private int maxTextWidth = -1;
     private int maxTextHeight = -1;
     private int maxCharCount = -1;
-
     private String[] text = {""};
     private String[] hint;
     private int cursorX;
     private int cursorY;
     private int selectionX;
     private int selectionY;
-
     // Rendering
     private int currentXOffset;
     private int currentYOffset;
     private int blinkCursorTick;
-    public ReadableColor textColorEnabled = new Color(224, 224, 224);
-    public ReadableColor textColorDisabled = new Color(112, 112, 112);
     private ReadableDimension size = new Dimension(0, 0); // Size of last render
 
     public AbstractGuiTextArea() {
@@ -80,6 +75,11 @@ public abstract class AbstractGuiTextArea<T extends AbstractGuiTextArea<T>>
 
     public AbstractGuiTextArea(GuiContainer container) {
         super(container);
+    }
+
+    @Override
+    public String[] getText() {
+        return this.text;
     }
 
     @Override
@@ -94,11 +94,6 @@ public abstract class AbstractGuiTextArea<T extends AbstractGuiTextArea<T>>
             }
         }
         return getThis();
-    }
-
-    @Override
-    public String[] getText() {
-        return this.text;
     }
 
     @Override
@@ -385,30 +380,6 @@ public abstract class AbstractGuiTextArea<T extends AbstractGuiTextArea<T>>
     }
 
     @Override
-    public T setFocused(boolean isFocused) {
-        if (isFocused && !this.focused) {
-            this.blinkCursorTick = 0; // Restart blinking to indicate successful focus
-        }
-        if (this.focused != isFocused) {
-            this.focused = isFocused;
-            onFocusChanged(this.focused);
-        }
-        return getThis();
-    }
-
-    @Override
-    public T setNext(com.replaymod.gui.function.Focusable next) {
-        this.next = next;
-        return getThis();
-    }
-
-    @Override
-    public T setPrevious(com.replaymod.gui.function.Focusable previous) {
-        this.previous = previous;
-        return getThis();
-    }
-
-    @Override
     public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
         this.size = size;
         updateCurrentOffset();
@@ -622,24 +593,6 @@ public abstract class AbstractGuiTextArea<T extends AbstractGuiTextArea<T>>
     }
 
     @Override
-    public T setMaxTextWidth(int maxTextWidth) {
-        this.maxTextWidth = maxTextWidth;
-        return getThis();
-    }
-
-    @Override
-    public T setMaxTextHeight(int maxTextHeight) {
-        this.maxTextHeight = maxTextHeight;
-        return getThis();
-    }
-
-    @Override
-    public T setMaxCharCount(int maxCharCount) {
-        this.maxCharCount = maxCharCount;
-        return getThis();
-    }
-
-    @Override
     public T setTextColor(ReadableColor textColor) {
         this.textColorEnabled = textColor;
         return getThis();
@@ -687,23 +640,65 @@ public abstract class AbstractGuiTextArea<T extends AbstractGuiTextArea<T>>
         return this.focused;
     }
 
+    @Override
+    public T setFocused(boolean isFocused) {
+        if (isFocused && !this.focused) {
+            this.blinkCursorTick = 0; // Restart blinking to indicate successful focus
+        }
+        if (this.focused != isFocused) {
+            this.focused = isFocused;
+            onFocusChanged(this.focused);
+        }
+        return getThis();
+    }
+
     public com.replaymod.gui.function.Focusable getNext() {
         return this.next;
+    }
+
+    @Override
+    public T setNext(com.replaymod.gui.function.Focusable next) {
+        this.next = next;
+        return getThis();
     }
 
     public Focusable getPrevious() {
         return this.previous;
     }
 
+    @Override
+    public T setPrevious(com.replaymod.gui.function.Focusable previous) {
+        this.previous = previous;
+        return getThis();
+    }
+
     public int getMaxTextWidth() {
         return this.maxTextWidth;
+    }
+
+    @Override
+    public T setMaxTextWidth(int maxTextWidth) {
+        this.maxTextWidth = maxTextWidth;
+        return getThis();
     }
 
     public int getMaxTextHeight() {
         return this.maxTextHeight;
     }
 
+    @Override
+    public T setMaxTextHeight(int maxTextHeight) {
+        this.maxTextHeight = maxTextHeight;
+        return getThis();
+    }
+
     public int getMaxCharCount() {
         return this.maxCharCount;
+    }
+
+    @Override
+    public T setMaxCharCount(int maxCharCount) {
+        this.maxCharCount = maxCharCount;
+        return getThis();
     }
 }

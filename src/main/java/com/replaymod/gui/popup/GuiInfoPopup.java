@@ -38,6 +38,25 @@ import de.johni0702.minecraft.gui.utils.lwjgl.ReadablePoint;
 
 
 public class GuiInfoPopup extends AbstractGuiPopup<GuiInfoPopup> implements Typeable {
+    private final com.replaymod.gui.container.GuiPanel info = new com.replaymod.gui.container.GuiPanel().setMinSize(new Dimension(320, 50))
+            .setLayout(new com.replaymod.gui.layout.VerticalLayout(com.replaymod.gui.layout.VerticalLayout.Alignment.TOP).setSpacing(2));
+    private Runnable onClosed = () -> {
+    };
+    private final com.replaymod.gui.element.GuiButton closeButton = new com.replaymod.gui.element.GuiButton().setSize(150, 20).onClick(() -> {
+        close();
+        onClosed.run();
+    }).setI18nLabel("gui.back");
+    private int layer;
+
+    {
+        popup.setLayout(new com.replaymod.gui.layout.VerticalLayout().setSpacing(10))
+                .addElements(new VerticalLayout.Data(0.5), info, closeButton);
+    }
+
+    public GuiInfoPopup(GuiContainer container) {
+        super(container);
+    }
+
     public static GuiInfoPopup open(com.replaymod.gui.container.GuiContainer container, String... info) {
         com.replaymod.gui.element.GuiElement[] labels = new com.replaymod.gui.element.GuiElement[info.length];
         for (int i = 0; i < info.length; i++) {
@@ -51,28 +70,6 @@ public class GuiInfoPopup extends AbstractGuiPopup<GuiInfoPopup> implements Type
         popup.getInfo().addElements(new com.replaymod.gui.layout.VerticalLayout.Data(0.5), info);
         popup.open();
         return popup;
-    }
-
-    private Runnable onClosed = () -> {
-    };
-
-    private final com.replaymod.gui.element.GuiButton closeButton = new com.replaymod.gui.element.GuiButton().setSize(150, 20).onClick(() -> {
-        close();
-        onClosed.run();
-    }).setI18nLabel("gui.back");
-
-    private final com.replaymod.gui.container.GuiPanel info = new com.replaymod.gui.container.GuiPanel().setMinSize(new Dimension(320, 50))
-            .setLayout(new com.replaymod.gui.layout.VerticalLayout(com.replaymod.gui.layout.VerticalLayout.Alignment.TOP).setSpacing(2));
-
-    {
-        popup.setLayout(new com.replaymod.gui.layout.VerticalLayout().setSpacing(10))
-                .addElements(new VerticalLayout.Data(0.5), info, closeButton);
-    }
-
-    private int layer;
-
-    public GuiInfoPopup(GuiContainer container) {
-        super(container);
     }
 
     public GuiInfoPopup setCloseLabel(String label) {

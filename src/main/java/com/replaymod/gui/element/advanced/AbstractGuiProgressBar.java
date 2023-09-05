@@ -50,18 +50,6 @@ public abstract class AbstractGuiProgressBar<T extends AbstractGuiProgressBar<T>
     }
 
     @Override
-    public T setProgress(float progress) {
-        this.progress = progress;
-        return getThis();
-    }
-
-    @Override
-    public T setLabel(String label) {
-        this.label = label;
-        return getThis();
-    }
-
-    @Override
     public T setI18nLabel(String label, Object... args) {
         return setLabel(I18n.format(label, args));
     }
@@ -93,7 +81,19 @@ public abstract class AbstractGuiProgressBar<T extends AbstractGuiProgressBar<T>
         return this.progress;
     }
 
+    @Override
+    public T setProgress(float progress) {
+        this.progress = progress;
+        return getThis();
+    }
+
     public String getLabel() {
         return this.label;
+    }
+
+    @Override
+    public T setLabel(String label) {
+        this.label = label;
+        return getThis();
     }
 }

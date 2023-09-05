@@ -49,28 +49,18 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
     protected static final int BORDER_BOTTOM = 3;
 
     protected static final int MARKER_MIN_DISTANCE = 40;
-
+    /**
+     * Use {@link #getLastSize()} instead.
+     */
+    @Deprecated
+    protected ReadableDimension size;
     private OnClick onClick;
-
     private int length;
     private int cursorPosition;
     private double zoom = 1;
     private int offset;
     private boolean drawCursor = true;
     private boolean drawMarkers;
-
-    /**
-     * Use {@link #getLastSize()} instead.
-     */
-    @Deprecated
-    protected ReadableDimension size;
-
-    public AbstractGuiTimeline() {
-    }
-
-    public AbstractGuiTimeline(GuiContainer container) {
-        super(container);
-    }
 
     {
         setTooltip(new GuiTooltip() {
@@ -80,6 +70,13 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
                 super.draw(renderer, size, renderInfo);
             }
         }.setText("00:00"));
+    }
+
+    public AbstractGuiTimeline() {
+    }
+
+    public AbstractGuiTimeline(GuiContainer container) {
+        super(container);
     }
 
     protected String getTooltipText(RenderInfo renderInfo) {
@@ -202,25 +199,25 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
     }
 
     @Override
+    public int getLength() {
+        return length;
+    }
+
+    @Override
     public T setLength(int length) {
         this.length = length;
         return getThis();
     }
 
     @Override
-    public int getLength() {
-        return length;
+    public int getCursorPosition() {
+        return cursorPosition;
     }
 
     @Override
     public T setCursorPosition(int position) {
         this.cursorPosition = Math.min(Math.max(position, 0), length);
         return getThis();
-    }
-
-    @Override
-    public int getCursorPosition() {
-        return cursorPosition;
     }
 
     public T ensureCursorVisible() {
@@ -242,6 +239,11 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
     }
 
     @Override
+    public double getZoom() {
+        return zoom;
+    }
+
+    @Override
     public T setZoom(double zoom) {
         this.zoom = Math.min(zoom, 1);
         checkOffset();
@@ -249,8 +251,8 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
     }
 
     @Override
-    public double getZoom() {
-        return zoom;
+    public int getOffset() {
+        return offset;
     }
 
     @Override
@@ -258,11 +260,6 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
         this.offset = Math.max(offset, 0);
         checkOffset();
         return getThis();
-    }
-
-    @Override
-    public int getOffset() {
-        return offset;
     }
 
     @Override
@@ -321,14 +318,14 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
     }
 
     @Override
-    public T setCursor(boolean active) {
-        this.drawCursor = active;
-        return getThis();
+    public boolean getCursor() {
+        return drawCursor;
     }
 
     @Override
-    public boolean getCursor() {
-        return drawCursor;
+    public T setCursor(boolean active) {
+        this.drawCursor = active;
+        return getThis();
     }
 
     /**

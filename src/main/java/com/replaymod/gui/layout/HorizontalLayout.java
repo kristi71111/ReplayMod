@@ -112,6 +112,10 @@ public class HorizontalLayout implements Layout {
         return this;
     }
 
+    public enum Alignment {
+        LEFT, RIGHT, CENTER
+    }
+
     public static class Data implements LayoutData {
         private double alignment;
 
@@ -150,9 +154,5 @@ public class HorizontalLayout implements Layout {
                     "alignment=" + alignment +
                     '}';
         }
-    }
-
-    public enum Alignment {
-        LEFT, RIGHT, CENTER
     }
 }

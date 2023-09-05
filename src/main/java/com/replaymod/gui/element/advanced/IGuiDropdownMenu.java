@@ -32,21 +32,21 @@ import java.util.Map;
 import java.util.function.Function;
 
 public interface IGuiDropdownMenu<V, T extends IGuiDropdownMenu<V, T>> extends GuiElement<T> {
-    T setValues(V... values);
+    V getSelectedValue();
+
+    int getSelected();
 
     T setSelected(int selected);
 
     T setSelected(V value);
 
-    V getSelectedValue();
-
-    T setOpened(boolean opened);
-
-    int getSelected();
-
     V[] getValues();
 
+    T setValues(V... values);
+
     boolean isOpened();
+
+    T setOpened(boolean opened);
 
     T onSelection(Consumer<Integer> consumer);
 
