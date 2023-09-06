@@ -4,6 +4,7 @@ import com.replaymod.core.ReplayMod;
 import com.replaymod.core.versions.MCVer;
 import com.replaymod.replaystudio.PacketData;
 import com.replaymod.replaystudio.data.Marker;
+import com.replaymod.replaystudio.filter.DimensionTracker;
 import com.replaymod.replaystudio.filter.SquashFilter;
 import com.replaymod.replaystudio.filter.StreamFilter;
 import com.replaymod.replaystudio.io.ReplayInputStream;
@@ -21,7 +22,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -121,7 +129,8 @@ public class MarkerProcessor {
         int splitCounter = 0;
 
         PacketTypeRegistry registry = MCVer.getPacketTypeRegistry(true);
-        SquashFilter squashFilter = new SquashFilter(null,null,null);
+        DimensionTracker dimensionTracker = new DimensionTracker();
+        SquashFilter squashFilter = new SquashFilter(null, null, null);
 
         List<Pair<Path, ReplayMetaData>> outputPaths = new ArrayList<>();
 
@@ -179,7 +188,7 @@ public class MarkerProcessor {
                                         cutFilter.release();
                                     }
                                     startCutOffset = nextMarker.getTime();
-                                    cutFilter = new SquashFilter(null,null,null);
+                                    cutFilter = new SquashFilter(dimensionTracker);
                                 } else if (MARKER_NAME_END_CUT.equals(nextMarker.getName())) {
                                     timeOffset += nextMarker.getTime() - startCutOffset;
                                     if (cutFilter != null) {
@@ -207,6 +216,7 @@ public class MarkerProcessor {
                                 continue;
                             }
 
+                            dimensionTracker.onPacket(null, nextPacket);
                             if (hasFurtherOutputs) {
                                 squashFilter.onPacket(null, nextPacket);
                             }
