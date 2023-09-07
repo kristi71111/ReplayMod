@@ -4,6 +4,7 @@ import com.github.steveice10.packetlib.io.NetOutput;
 import com.github.steveice10.packetlib.tcp.io.ByteBufNetOutput;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
+import com.replaymod.core.MinecraftMethodAccessor;
 import com.replaymod.core.ReplayMod;
 import com.replaymod.core.utils.Restrictions;
 import com.replaymod.core.utils.WrappedTimer;
@@ -54,6 +55,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.replaymod.core.versions.MCVer.*;
 import static com.replaymod.replaystudio.util.Utils.readInt;
@@ -273,6 +277,7 @@ public class FullReplaySender extends ChannelDuplexHandler implements ReplaySend
             return;
         }
         terminate = true;
+        syncSender.shutdown();
         events.unregister();
         try {
             channelInactive(ctx);
@@ -332,23 +337,7 @@ public class FullReplaySender extends ChannelDuplexHandler implements ReplaySend
                     // System.out.println("Processing a packet. Class: " + processed.getClass().toString());
                     super.channelRead(ctx, processed);
                 }
-
-                // If we do not give minecraft time to tick, there will be dead entity artifacts left in the world
-                // Therefore we have to remove all loaded, dead entities manually if we are in sync mode.
-                // We do this after every SpawnX packet and after the destroy entities packet.
-                if (!asyncMode && mc.world != null) {
-                    if (processed instanceof SSpawnPlayerPacket
-                            || processed instanceof SSpawnObjectPacket
-                            || processed instanceof SSpawnMobPacket
-                            || processed instanceof SSpawnPaintingPacket
-                            || processed instanceof SSpawnExperienceOrbPacket
-                            || processed instanceof SDestroyEntitiesPacket) {
-                        ClientWorld world = mc.world;
-                        // Note: Not sure if it's still required but there's this really handy method anyway
-                        world.removeAllEntities();
-                    }
-                }
-
+                maybeRemoveDeadEntities(processed);
                 if (processed instanceof SChunkDataPacket) {
                     Runnable doLightUpdates = () -> {
                         ClientWorld world = mc.world;
@@ -370,7 +359,34 @@ public class FullReplaySender extends ChannelDuplexHandler implements ReplaySend
                 e.printStackTrace();
             }
         }
+    }
+    // If we do not give minecraft time to tick, there will be dead entity artifacts left in the world
+    // Therefore we have to remove all loaded, dead entities manually if we are in sync mode.
+    // We do this after every SpawnX packet and after the destroy entities packet.
+    private void maybeRemoveDeadEntities(IPacket packet) {
+        if (asyncMode) {
+            return; // MC should have enough time to tick
+        }
 
+        boolean relevantPacket = packet instanceof SSpawnPlayerPacket
+                || packet instanceof SSpawnObjectPacket
+                || packet instanceof SSpawnMobPacket
+                || packet instanceof SSpawnPaintingPacket
+                || packet instanceof SSpawnExperienceOrbPacket
+                || packet instanceof SDestroyEntitiesPacket;
+        if (!relevantPacket) {
+            return; // don't want to do it too often, only when there's likely to be a dead entity
+        }
+
+        mc.enqueue(() -> {
+            ClientWorld world = mc.world;
+            if (world != null) {
+                removeDeadEntities(world);
+            }
+        });
+    }
+    private void removeDeadEntities(ClientWorld world) {
+        world.removeAllEntities();
     }
 
     private IPacket deserializePacket(byte[] bytes) {
@@ -578,8 +594,13 @@ public class FullReplaySender extends ChannelDuplexHandler implements ReplaySend
                 return null;
             }
         }
-
-        return asyncMode ? processPacketAsync(p) : processPacketSync(p);
+        if (asyncMode) {
+            return processPacketAsync(p);
+        } else {
+            IPacket fp = p;
+            mc.enqueue(() -> processPacketSync(fp));
+            return p;
+        }
     }
 
     @Override
@@ -840,9 +861,46 @@ public class FullReplaySender extends ChannelDuplexHandler implements ReplaySend
      *
      * @param timestamp The timestamp in milliseconds since the beginning of this replay
      */
+    // Even in sync mode, we send from another thread because mods may rely on that
+    private final ExecutorService syncSender = Executors.newSingleThreadExecutor(runnable ->
+            new Thread(runnable, "replaymod-sync-sender"));
     @Override
     public void sendPacketsTill(int timestamp) {
         Preconditions.checkState(!asyncMode, "This method cannot be used in async mode. Use jumpToTime(int) instead.");
+
+        // Submit our target to the sender thread and track its progress
+        AtomicBoolean doneSending = new AtomicBoolean();
+        syncSender.submit(() -> {
+            try {
+                doSendPacketsTill(timestamp);
+            } finally {
+                doneSending.set(true);
+            }
+        });
+
+        // Drain the task queue while we are sending (in case a mod blocks the io thread waiting for the main thread)
+        while (!doneSending.get()) {
+            executeTaskQueue();
+
+            // Wait until the sender thread has made progress
+            try {
+                //noinspection BusyWait
+                Thread.sleep(0, 100_000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
+
+        // Everything has been sent, drain the queue one last time
+        executeTaskQueue();
+    }
+    private void executeTaskQueue() {
+        //#if MC>=11400
+        ((MinecraftMethodAccessor) mc).replayModExecuteTaskQueue();
+        ReplayMod.instance.runTasks();
+    }
+    private void doSendPacketsTill(int timestamp) {
         try {
             while (ctx == null && !terminate) { // Make sure channel is ready
                 Thread.sleep(10);
