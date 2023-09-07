@@ -5,7 +5,6 @@
   "mixins": [],
   "server": [],
   "client": [
-    "MixinEntity",
     "AbstractButtonWidgetAccessor",
     "AddServerScreenAccessor",
     "EntityLivingBaseAccessor",
