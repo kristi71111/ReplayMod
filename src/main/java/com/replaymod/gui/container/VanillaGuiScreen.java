@@ -164,7 +164,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, Typeable, 
         private boolean handled;
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
-        public void mouseClicked(GuiScreenEvent.MouseClickedEvent event) {
+        public void mouseClicked(GuiScreenEvent.MouseClickedEvent.Pre event) {
             handled = getSuperMcGui().mouseClicked(event.getMouseX(), event.getMouseY(), event.getButton());
             if (handled) {
                 event.setCanceled(true);
@@ -172,7 +172,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, Typeable, 
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
-        public void mouseDrag(GuiScreenEvent.MouseDragEvent event) {
+        public void mouseDrag(GuiScreenEvent.MouseDragEvent.Pre event) {
             handled = getSuperMcGui().mouseDragged(event.getMouseX(), event.getMouseY(), event.getMouseButton(), event.getDragX(), event.getDragY());
             if (handled) {
                 event.setCanceled(true);
@@ -180,7 +180,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, Typeable, 
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
-        public void mouseClicked(GuiScreenEvent.MouseReleasedEvent event) {
+        public void mouseClicked(GuiScreenEvent.MouseReleasedEvent.Pre event) {
             handled = getSuperMcGui().mouseReleased(event.getMouseX(), event.getMouseY(), event.getButton());
             if (handled) {
                 event.setCanceled(true);
@@ -188,7 +188,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, Typeable, 
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
-        public void mouseClicked(GuiScreenEvent.MouseScrollEvent event) {
+        public void mouseClicked(GuiScreenEvent.MouseScrollEvent.Pre event) {
             handled = getSuperMcGui().mouseScrolled(event.getMouseX(), event.getMouseY(), event.getScrollDelta());
             if (handled) {
                 event.setCanceled(true);
@@ -196,7 +196,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, Typeable, 
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
-        public void mouseClicked(GuiScreenEvent.KeyboardKeyPressedEvent event) {
+        public void mouseClicked(GuiScreenEvent.KeyboardKeyPressedEvent.Pre event) {
             handled = getSuperMcGui().keyPressed(event.getKeyCode(), event.getScanCode(), event.getModifiers());
             if (handled) {
                 event.setCanceled(true);
@@ -204,7 +204,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, Typeable, 
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
-        public void mouseClicked(GuiScreenEvent.KeyboardKeyReleasedEvent event) {
+        public void mouseClicked(GuiScreenEvent.KeyboardKeyReleasedEvent.Pre event) {
             handled = getSuperMcGui().keyReleased(event.getKeyCode(), event.getScanCode(), event.getModifiers());
             if (handled) {
                 event.setCanceled(true);
@@ -212,7 +212,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, Typeable, 
         }
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
-        public void mouseClicked(GuiScreenEvent.KeyboardCharTypedEvent event) {
+        public void mouseClicked(GuiScreenEvent.KeyboardCharTypedEvent.Pre event) {
             handled = getSuperMcGui().charTyped(event.getCodePoint(), event.getModifiers());
             if (handled) {
                 event.setCanceled(true);

@@ -920,7 +920,7 @@ public class FullReplaySender extends ChannelDuplexHandler implements ReplaySend
                     loginPhase = true;
                     startFromBeginning = false;
                     nextPacket = null;
-                    replayHandler.restartedReplay();
+                    ReplayMod.instance.runSync(replayHandler::restartedReplay);
                 }
 
                 if (replayIn == null) {
