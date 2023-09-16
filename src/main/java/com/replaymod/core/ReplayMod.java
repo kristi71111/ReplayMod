@@ -291,7 +291,20 @@ public class ReplayMod implements Module, Scheduler {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+            // Cleanup deleted corrupted replays
+            try (DirectoryStream<Path> paths = Files.newDirectoryStream(getReplayFolder())) {
+                for (Path path : paths) {
+                    String name = path.getFileName().toString();
+                    if (name.endsWith(".mcpr.del") && Files.isDirectory(path)) {
+                        long lastModified = Files.getLastModifiedTime(path).toMillis();
+                        if (lastModified + 2 * DAYS < System.currentTimeMillis()) {
+                            FileUtils.deleteDirectory(path.toFile());
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             // Restore corrupted replays
             try (DirectoryStream<Path> paths = Files.newDirectoryStream(getReplayFolder())) {
                 for (Path path : paths) {

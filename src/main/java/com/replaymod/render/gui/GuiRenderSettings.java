@@ -621,7 +621,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
     }
 
     private RenderSettings getDefaultRenderSettings() {
-        return new RenderSettings(RenderSettings.RenderMethod.DEFAULT, RenderSettings.EncodingPreset.MP4_CUSTOM, 1920, 1080, 60, 10 << 20, null,
+        return new RenderSettings(RenderSettings.RenderMethod.DEFAULT, RenderSettings.EncodingPreset.MP4_CUSTOM, 1920, 1080, 60, 20 << 20, null,
                 false, false, false, false, null, 360, 180, false, false, false, RenderSettings.AntiAliasing.NONE, "", RenderSettings.EncodingPreset.MP4_CUSTOM.getValue(), false);
     }
 

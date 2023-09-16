@@ -282,7 +282,8 @@ public class PacketListener extends ChannelInboundHandlerAdapter {
 
                     // If we crash right here, on the next start we'll prompt the user for recovery
                     // but we don't really want that, so drop a marker file to skip recovery for this replay.
-                    Files.createFile(outputPath.resolveSibling(outputPath.getFileName() + ".no_recover"));
+                    Path noRecoverMarker = outputPath.resolveSibling(outputPath.getFileName() + ".no_recover");
+                    Files.createFile(noRecoverMarker);
 
                     // We still have the replay, so we just save it (at least for a few weeks) in case they change their mind
                     String replayName = FilenameUtils.getBaseName(outputPath.getFileName().toString());
@@ -294,6 +295,8 @@ public class PacketListener extends ChannelInboundHandlerAdapter {
                     Files.createDirectories(rawPath.getParent());
                     replayFile.saveTo(rawPath.toFile());
                     replayFile.close();
+                    // Done, clean up the marker
+                    Files.delete(noRecoverMarker);
                     return null;
                 }
 
